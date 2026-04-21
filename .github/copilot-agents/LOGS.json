@@ -1,0 +1,194 @@
+[
+  {
+    "timestamp": "2026-04-21T08:02:00Z",
+    "from": "@PMO",
+    "to": "@BA",
+    "task_id": "TASK-002",
+    "status": "DELEGATED",
+    "input": { "description": "Analyze inbox/wUser/myRequirement.md and produce docs/specs/TASK-002.md (User Stories + Acceptance Criteria)" },
+    "output": null,
+    "log": "Delegated BA to write User Stories and Acceptance Criteria for AMS."
+  },
+  {
+    "timestamp": "2026-04-21T08:05:00Z",
+    "from": "@PMO",
+    "to": "@BA",
+    "task_id": "TASK-002",
+    "status": "COMPLETED",
+    "input": { "description": "Delivered spec file docs/specs/TASK-002.md" },
+    "output": { "artifact": "docs/specs/TASK-002.md" },
+    "log": "BA returned spec content; file created in docs/specs/TASK-002.md."
+  },
+  {
+    "timestamp": "2026-04-21T08:06:30Z",
+    "from": "@PMO",
+    "to": "@Tech-lead",
+    "task_id": "TASK-003",
+    "status": "DELEGATED",
+    "input": { "description": "Design system architecture and produce ARCHITECTURE.md and API_SPEC.yaml based on docs/specs/TASK-002.md" },
+    "output": null,
+    "log": "Delegated Tech-lead to design architecture and API spec for AMS."
+  },
+  {
+    "timestamp": "2026-04-21T08:10:00Z",
+    "from": "@PMO",
+    "to": "@Tech-lead",
+    "task_id": "TASK-003",
+    "status": "COMPLETED",
+    "input": { "description": "Updated ARCHITECTURE.md and API_SPEC.yaml for AMS" },
+    "output": { "artifacts": ["ARCHITECTURE.md","API_SPEC.yaml"] },
+    "log": "Tech-lead returned architecture and API spec; files updated."
+  },
+  {
+    "timestamp": "2026-04-21T08:11:30Z",
+    "from": "@PMO",
+    "to": "@DB-Admin",
+    "task_id": "TASK-004",
+    "status": "DELEGATED",
+    "input": { "description": "Design DB schema and produce Flyway SQL migrations V1..V9 for AMS" },
+    "output": null,
+    "log": "Delegated DB-Admin to create initial Flyway migrations for AMS."
+  },
+  {
+    "timestamp": "2026-04-21T08:20:00Z",
+    "from": "@PMO",
+    "to": "@DB-Admin",
+    "task_id": "TASK-004",
+    "status": "COMPLETED",
+    "input": { "description": "Created Flyway migration files under db/migrations/ V1..V9" },
+    "output": { "artifacts": ["db/migrations/V1__extensions_and_base.sql", "db/migrations/V2__user_accounts_and_roles.sql", "db/migrations/V3__organization_units.sql", "db/migrations/V4__staff.sql", "db/migrations/V5__student_profiles.sql", "db/migrations/V6__classes_enrollments.sql", "db/migrations/V7__news_posts.sql", "db/migrations/V8__outbox.sql", "db/migrations/V9__seed_roles_and_admin.sql"] },
+    "log": "DB-Admin returned migration SQL files; files created under db/migrations/."
+  },
+  {
+    "timestamp": "2026-04-21T08:31:00Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-010",
+    "status": "DELEGATED",
+    "input": { "description": "Implement AddStudentToClass transactional backend: implement POST /api/v1/classes/{classId}/students, service addStudentToClass, repositories, integration tests, and outbox write; follow docs/specs/TASK-002.md and API_SPEC.yaml." },
+    "output": null,
+    "log": "Delegated Java-BE to implement TASK-010: AddStudentToClass backend implementation and tests."
+  },
+  {
+    "timestamp": "2026-04-21T08:35:00Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-010",
+    "status": "COMPLETED",
+    "input": { "description": "Implement AddStudentToClass transactional backend and tests" },
+    "output": { "artifacts": ["backend/src/main/java/com/usm/ams/service/StudentServiceImpl.java","backend/src/main/java/com/usm/ams/controller/ClassesController.java","backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java"] },
+    "log": "Java-BE returned implemented backend files and integration tests for TASK-010; ready for Code-Review."
+  },
+  {
+    "timestamp": "2026-04-21T08:50:00Z",
+    "from": "@PMO",
+    "to": "@React-FE",
+    "task_id": "TASK-006",
+    "status": "COMPLETED",
+    "input": { "description": "Implement frontend AddStudentToClass integration, auth, and RBAC-aware UI" },
+    "output": { "artifacts": ["frontend/src/features/classes/AddStudentForm.tsx","frontend/src/features/classes/ClassPicker.tsx","frontend/src/lib/api.ts","frontend/src/pages/LoginPage.tsx","frontend/src/__tests__/AddStudent.test.tsx"] },
+    "log": "React-FE returned frontend changes and tests for TASK-006; ready for integration with backend."
+  },
+  {
+    "timestamp": "2026-04-21T08:56:00Z",
+    "from": "@PMO",
+    "to": "@DevOps-Engine",
+    "task_id": "TASK-011",
+    "status": "DELEGATED",
+    "input": { "description": "Create Dockerfiles for backend and frontend, docker-compose.yml, .env.example, and docs/deploy/Docker-Compose.md; ensure Postgres 15 and Redis services and a startup migration path for db/migrations." },
+    "output": null,
+    "log": "Delegated DevOps-Engine to create Dockerfiles and docker-compose for AMS deployment." 
+  },
+  {
+    "timestamp": "2026-04-21T09:02:00Z",
+    "from": "@DevOps-Engine",
+    "to": "@PMO",
+    "task_id": "TASK-011",
+    "status": "COMPLETED",
+    "input": { "description": "Created Dockerfiles, docker-compose.yml, .env.example, and docs/deploy/Docker-Compose.md" },
+    "output": { "artifacts": ["backend/Dockerfile","frontend/Dockerfile","docker-compose.yml","docker-compose.override.yml",".env.example","docs/deploy/Docker-Compose.md"] },
+    "log": "DevOps-Engine produced Dockerfiles and docker-compose artifacts; ready for verification." 
+  },
+  {
+    "timestamp": "2026-04-21T15:48:00Z",
+    "from": "@PMO",
+    "to": "@DevOps-Engine",
+    "task_id": "TASK-012",
+    "status": "DELEGATED",
+    "input": { "description": "Diagnose and remediate Testcontainers/Docker API mismatch preventing backend integration tests (client API 1.32 < required 1.40). Add wrapper script, docs, and optional Surefire env var; run integration test and report results." },
+    "output": null,
+    "log": "Delegated DevOps-Engine to fix Testcontainers Docker API mismatch and provide wrapper + docs; awaiting results and approval from @Java-BE and @QA-Tester."
+  },
+  {
+    "timestamp": "2026-04-21T15:52:00Z",
+    "from": "@DevOps-Engine",
+    "to": "@PMO",
+    "task_id": "TASK-012",
+    "status": "COMPLETED",
+    "input": { "description": "Added integration test wrapper and Try to set DOCKER_API_VERSION; updated docs and Surefire config; attempted to run integration test." },
+    "output": { "artifacts": ["scripts/run-integration-tests.sh","backend/README.md","docs/deploy/Docker-Compose.md","backend/pom.xml"] },
+    "log": "DevOps-Engine added wrapper and Surefire config, pinned Testcontainers, re-ran integration tests; tests still fail due to Docker API mismatch. Recommended upgrading Docker or setting DOCKER_HOST/CI env."
+  }
+  ,
+  {
+    "timestamp": "2026-04-21T15:58:00Z",
+    "from": "@Tech-lead",
+    "to": "@PMO",
+    "task_id": "TASK-013",
+    "status": "COMPLETED",
+    "input": { "description": "Design RBAC and JWT for AMS; update ARCHITECTURE.md and API_SPEC.yaml; provide Flyway migration V10 for role scopes and implementation plan." },
+    "output": { "artifacts": ["ARCHITECTURE.md","API_SPEC.yaml","db/migrations/V10__role_scopes.sql"] },
+    "log": "Tech-lead delivered RBAC & JWT design, API spec annotations, and a Flyway migration for scoped role assignments; ready to hand off to Java-BE for implementation."
+  }
+  {
+    "timestamp": "2026-04-21T16:12:00Z",
+    "from": "@Code-Review",
+    "to": "@PMO",
+    "task_id": "TASK-014",
+    "status": "COMPLETED",
+    "input": { "description": "Review RBAC + JWT implementation files and tests" },
+    "output": { "artifact": "docs/review-reports/TASK-014-code-review.md" },
+    "log": "Code-Review completed with CHANGES_REQUIRED: critical JWT validation and service-level auth fixes requested, plus other improvements. See review report for details."
+  }
+  ,
+  {
+    "timestamp": "2026-04-21T16:05:00Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-014",
+    "status": "COMPLETED",
+    "input": { "description": "Implement RBAC & JWT scaffolding, protect endpoint, add AclService, and tests as per TECH-LEAD design." },
+    "output": { "artifacts": [
+      "backend/src/main/java/com/usm/ams/security/SecurityConfig.java",
+      "backend/src/main/java/com/usm/ams/security/JwtService.java",
+      "backend/src/main/java/com/usm/ams/security/JwtAuthenticationFilter.java",
+      "backend/src/main/java/com/usm/ams/security/UserDetailsServiceImpl.java",
+      "backend/src/main/java/com/usm/ams/security/AclService.java",
+      "backend/src/main/java/com/usm/ams/controller/ClassesController.java",
+      "backend/src/test/java/com/usm/ams/security/AclServiceTest.java",
+      "backend/src/test/java/com/usm/ams/security/JwtAuthenticationFilterTest.java",
+      "backend/src/test/java/com/usm/ams/integration/RbacIntegrationTest.java",
+      "backend/src/test/resources/db/migration/V11__seed_test_user.sql"
+    ] },
+    "log": "Java-BE implemented RBAC + JWT scaffolding, added tests and test seed; unit tests passed locally; integration tests skipped by default (require RUN_INTEGRATION_TESTS=true and working Testcontainers)."
+  }
+  ,
+  {
+    "timestamp": "2026-04-21T16:20:00Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-015",
+    "status": "COMPLETED",
+    "input": { "description": "Implement Code-Review fixes: JWT claim validation, PasswordEncoder injection, service-level @PreAuthorize, AclService error handling, role normalization, update tests." },
+    "output": { "artifacts": [
+      "backend/src/main/java/com/usm/ams/security/JwtService.java",
+      "backend/src/main/java/com/usm/ams/security/UserDetailsServiceImpl.java",
+      "backend/src/main/java/com/usm/ams/security/AclService.java",
+      "backend/src/main/java/com/usm/ams/service/StudentServiceImpl.java",
+      "backend/src/test/java/com/usm/ams/security/JwtServiceTest.java",
+      "backend/src/test/java/com/usm/ams/service/StudentServiceImplTest.java",
+      "backend/src/test/java/com/usm/ams/security/AclServiceTest.java"
+    ] },
+    "log": "Java-BE implemented fixes requested by Code-Review and ran unit tests successfully (BUILD SUCCESS). Integration tests remain opt-in and require Docker/Testcontainers."
+  }
+]

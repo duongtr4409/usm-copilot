@@ -1,0 +1,816 @@
+openapi: 3.0.3
+
+info:
+  title: "AMS Core API"
+  version: "1.0.0"
+  description: "Core API for Organization Units, Staff, Classes/Enrollment, Accounts/RBAC, and News (TASK-002)."
+servers:
+  - url: http://localhost:8080/api/v1
+    description: Local development
+tags:
+  - name: auth
+    description: Authentication
+  - name: org
+    description: Organization Units
+  - name: staff
+    description: Staff management
+  - name: classes
+    description: Classes & Enrollment
+  - name: news
+    description: News & Announcements
+
+paths:
+  /auth/login:
+    post:
+      tags: [auth]
+      summary: "Authenticate user and return JWT tokens"
+      operationId: login
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/LoginRequest'
+      responses:
+        '200':
+          description: "Token response"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/TokenResponse'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /org-units:
+    get:
+      tags: [org]
+      summary: "Get Organization Unit tree"
+      description: "Authenticated users. Returns hierarchical org-unit tree."
+      operationId: listOrgUnits
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: "Org unit tree"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/OrganizationUnit'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [org]
+      summary: "Create Organization Unit"
+      description: "Requires ADMIN role."
+      operationId: createOrgUnit
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUnitCreate'
+      responses:
+        '201':
+          description: "Created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationUnit'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /org-units/{id}:
+    put:
+      tags: [org]
+      summary: "Update Organization Unit"
+      description: "Requires ADMIN role."
+      operationId: updateOrgUnit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/OrganizationUnitUpdate'
+      responses:
+        '200':
+          description: "Updated"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrganizationUnit'
+        '404':
+          $ref: '#/components/responses/NotFound'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    delete:
+      tags: [org]
+      summary: "Delete Organization Unit"
+      description: "Requires ADMIN role. Must handle children (reject or reparent)."
+      operationId: deleteOrgUnit
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: "Deleted"
+        '409':
+          $ref: '#/components/responses/Conflict'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /staff:
+    get:
+      tags: [staff]
+      summary: "List staff"
+      description: "Requires ADMIN role."
+      operationId: listStaff
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: "List of staff"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/Staff'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [staff]
+      summary: "Create staff (and linked account)"
+      description: "Requires ADMIN role."
+      operationId: createStaff
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffCreate'
+      responses:
+        '201':
+          description: "Staff created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '409':
+          $ref: '#/components/responses/ConflictUsername'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /staff/{id}:
+    put:
+      tags: [staff]
+      summary: "Update staff"
+      description: "Requires ADMIN role."
+      operationId: updateStaff
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/StaffUpdate'
+      responses:
+        '200':
+          description: "Updated staff"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/Staff'
+        '404':
+          $ref: '#/components/responses/NotFound'
+    delete:
+      tags: [staff]
+      summary: "Delete staff"
+      description: "Requires ADMIN role."
+      operationId: deleteStaff
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '204':
+          description: "Deleted"
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+  /classes/{classId}/students:
+    get:
+      tags: [classes]
+      summary: "Get students in class"
+      description: "Requires authentication. ADMIN or assigned staff can view."
+      operationId: getClassStudents
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: "Class roster"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/StudentProfile'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+    post:
+      tags: [classes]
+      summary: "Add student to class (atomic)"
+      description: "Creates user account, student profile, and enrollment in one atomic transaction. Requires ADMIN or CLASS_ADMIN."
+      operationId: addStudentToClass
+      security:
+        - bearerAuth: []
+      parameters:
+        - name: classId
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AddStudentToClassRequest'
+      responses:
+        '201':
+          description: "Student created and enrolled"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AddStudentToClassResponse'
+        '409':
+          $ref: '#/components/responses/ConflictUsername'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '500':
+          $ref: '#/components/responses/ServerError'
+
+  /news:
+    get:
+      tags: [news]
+      summary: "List news posts"
+      description: "Authenticated users can read news; visibility depends on scope."
+      operationId: listNews
+      security:
+        - bearerAuth: []
+      responses:
+        '200':
+          description: "News list"
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/NewsPost'
+    post:
+      tags: [news]
+      summary: "Create news post"
+      description: "Requires ADMIN role."
+      operationId: createNews
+      security:
+        - bearerAuth: []
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/NewsPostCreate'
+      responses:
+        '201':
+          description: "News created"
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/NewsPost'
+        '422':
+          $ref: '#/components/responses/ValidationError'
+        '401':
+          $ref: '#/components/responses/Unauthorized'
+
+components:
+  securitySchemes:
+    bearerAuth:
+      type: http
+      scheme: bearer
+        bearerFormat: JWT
+        description: >
+          JWT access token signed with RS256 (RSA + SHA256). Use header `Authorization: Bearer <token>`.
+          Access tokens are short-lived (e.g. 15 minutes). Use refresh tokens (rotate on use) to obtain new access tokens.
+
+  schemas:
+    LoginRequest:
+      type: object
+      required: [username, password]
+      properties:
+        username:
+          type: string
+        password:
+          type: string
+    TokenResponse:
+      type: object
+      properties:
+        accessToken:
+          type: string
+          description: "JWT access token"
+        tokenType:
+          type: string
+          example: "Bearer"
+        expiresIn:
+          type: integer
+          description: "seconds until expiry"
+        refreshToken:
+          type: string
+          description: "Refresh token (rotate on use)"
+    OrganizationUnit:
+      type: object
+              x-roles:
+                - ADMIN
+                - CLASS_ADMIN
+      properties:
+        id:
+          type: string
+          format: uuid
+        name:
+          type: string
+        code:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+          nullable: true
+        path:
+          type: string
+        metadata:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+    OrganizationUnitCreate:
+      type: object
+      required: [name]
+                '403':
+                  $ref: '#/components/responses/Forbidden'
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+    OrganizationUnitUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        code:
+          type: string
+        parentId:
+          type: string
+          format: uuid
+    Staff:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        staffNumber:
+          type: string
+        orgUnitId:
+          type: string
+          format: uuid
+        name:
+          type: string
+        email:
+          type: string
+        phone:
+          type: string
+        position:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    StaffCreate:
+      type: object
+      required: [username, initialPassword, name]
+      properties:
+        username:
+          type: string
+        initialPassword:
+          type: string
+        name:
+          type: string
+        email:
+          type: string
+        orgUnitId:
+          type: string
+          format: uuid
+        roles:
+          type: array
+          items:
+            type: string
+    StaffUpdate:
+      type: object
+      properties:
+        name:
+          type: string
+        email:
+          type: string
+        orgUnitId:
+          type: string
+          format: uuid
+        position:
+          type: string
+    UserAccountCreate:
+      type: object
+      required: [username, initialPassword]
+      properties:
+        username:
+          type: string
+        initialPassword:
+          type: string
+        email:
+          type: string
+        roles:
+          type: array
+          items:
+            type: string
+    StudentProfile:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        studentNumber:
+          type: string
+        firstName:
+          type: string
+        lastName:
+          type: string
+        dob:
+          type: string
+          format: date
+        grade:
+          type: string
+        guardianInfo:
+          type: object
+          additionalProperties: true
+        createdAt:
+          type: string
+          format: date-time
+    AddStudentToClassRequest:
+      type: object
+      required: [username, initialPassword, profile]
+      properties:
+        username:
+          type: string
+        initialPassword:
+          type: string
+        profile:
+          type: object
+          required: [firstName,lastName]
+          properties:
+            firstName:
+              type: string
+            lastName:
+              type: string
+            dob:
+              type: string
+              format: date
+            grade:
+              type: string
+            guardianInfo:
+              type: object
+              additionalProperties: true
+    AddStudentToClassResponse:
+      type: object
+      properties:
+        studentId:
+          type: string
+          format: uuid
+        accountId:
+          type: string
+          format: uuid
+        links:
+          type: object
+          properties:
+            self:
+              type: string
+            class:
+              type: string
+    Enrollment:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        classId:
+          type: string
+          format: uuid
+        studentProfileId:
+          type: string
+          format: uuid
+        status:
+          type: string
+          example: "ENROLLED"
+        enrolledAt:
+          type: string
+          format: date-time
+    Class:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        code:
+          type: string
+        title:
+          type: string
+        capacity:
+          type: integer
+        orgUnitId:
+          type: string
+          format: uuid
+    NewsPost:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+        title:
+          type: string
+        summary:
+          type: string
+        content:
+          type: string
+        authorAccountId:
+          type: string
+          format: uuid
+        scopeOrgUnitId:
+          type: string
+          format: uuid
+        isPublished:
+          type: boolean
+        publishedAt:
+          type: string
+          format: date-time
+    NewsPostCreate:
+      type: object
+      required: [title, content]
+      properties:
+        title:
+          type: string
+        summary:
+          type: string
+        content:
+          type: string
+        scopeOrgUnitId:
+          type: string
+          format: uuid
+        isPublished:
+          type: boolean
+
+  responses:
+    Unauthorized:
+      description: "Authentication required"
+    NotFound:
+      description: "Resource not found"
+    Conflict:
+      description: "Conflict: resource state prevents operation"
+    ConflictUsername:
+      description: "Username already exists"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "USERNAME_CONFLICT"
+              message:
+                type: string
+                example: "username already exists"
+    ValidationError:
+      description: "Validation failed"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "VALIDATION_ERROR"
+              message:
+                type: string
+              errors:
+                type: array
+                items:
+                  type: object
+    ServerError:
+      description: "Server error"
+      content:
+        application/json:
+          schema:
+            type: object
+            properties:
+              code:
+                type: string
+                example: "SERVER_ERROR"
+              message:
+                type: string
+
+security: []
+      properties:
+        accessToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR..."
+        refreshToken:
+          type: string
+          example: "eyJhbGciOiJIUzI1NiIsInR..."
+        tokenType:
+          type: string
+          example: "Bearer"
+        expiresIn:
+          type: integer
+          description: Access token TTL in seconds
+          example: 900
+        user:
+          $ref: '#/components/schemas/UserResponse'
+
+    # ── Users ───────────────────────────────────────────────────
+    UserResponse:
+      type: object
+      properties:
+        id:
+          type: string
+          format: uuid
+          example: "550e8400-e29b-41d4-a716-446655440000"
+        firstName:
+          type: string
+          example: "Nguyen"
+        lastName:
+          type: string
+          example: "Van A"
+        email:
+          type: string
+          format: email
+          example: "vana@example.com"
+        role:
+          type: string
+          enum: [ROLE_ADMIN, ROLE_USER, ROLE_MANAGER]
+          example: "ROLE_USER"
+        status:
+          type: string
+          enum: [ACTIVE, INACTIVE, DELETED]
+          example: "ACTIVE"
+        createdAt:
+          type: string
+          format: date-time
+        updatedAt:
+          type: string
+          format: date-time
+
+    UpdateUserRequest:
+      type: object
+      properties:
+        firstName:
+          type: string
+          maxLength: 100
+          example: "Nguyen"
+        lastName:
+          type: string
+          maxLength: 100
+          example: "Van B"
+
+    PagedUserResponse:
+      type: object
+      properties:
+        content:
+          type: array
+          items:
+            $ref: '#/components/schemas/UserResponse'
+        metadata:
+          $ref: '#/components/schemas/PageMetadata'
+
+  responses:
+    BadRequest:
+      description: Invalid request body or parameters
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "VALIDATION_ERROR"
+            message: "Validation failed"
+            details:
+              - field: "email"
+                message: "must be a well-formed email address"
+            timestamp: "2026-04-21T08:00:00Z"
+
+    Unauthorized:
+      description: Missing or invalid authentication token
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "UNAUTHORIZED"
+            message: "Authentication required"
+            timestamp: "2026-04-21T08:00:00Z"
+
+    Forbidden:
+      description: Authenticated but insufficient permissions
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "FORBIDDEN"
+            message: "Insufficient permissions"
+            timestamp: "2026-04-21T08:00:00Z"
+
+    NotFound:
+      description: Requested resource not found
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "NOT_FOUND"
+            message: "Resource not found"
+            timestamp: "2026-04-21T08:00:00Z"
+
+    Conflict:
+      description: Resource already exists
+      content:
+        application/json:
+          schema:
+            $ref: '#/components/schemas/ErrorResponse'
+          example:
+            code: "CONFLICT"
+            message: "Email already registered"
+            timestamp: "2026-04-21T08:00:00Z"
+
+security:
+  - BearerAuth: []
