@@ -15,7 +15,10 @@ export default function ClassPicker({
   value?: string
   onChange: (id: string) => void
 }) {
-  const { data = [], isLoading } = useQuery(['classes'], () => api.get<ClassItem[]>('/classes').then(r => r.data))
+  const { data = [], isLoading } = useQuery({
+    queryKey: ['classes'],
+    queryFn: () => api.get<ClassItem[]>('/classes').then(r => r.data)
+  })
 
   if (isLoading) return <div>Loading classes...</div>
 

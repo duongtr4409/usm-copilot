@@ -28,7 +28,10 @@ function buildTree(items: OrgUnit[]) {
 
 export default function OrgUnitsPage() {
   const qc = useQueryClient()
-  const { data = [], isLoading } = useQuery(['org-units'], () => api.get<OrgUnit[]>('/org-units').then(r => r.data))
+  const { data = [], isLoading } = useQuery({
+    queryKey: ['org-units'],
+    queryFn: () => api.get<OrgUnit[]>('/org-units').then(r => r.data)
+  })
   const [name, setName] = useState('')
   const [type, setType] = useState('Phòng')
   const [parentId, setParentId] = useState<string | ''>('')
@@ -41,13 +44,13 @@ export default function OrgUnitsPage() {
     await api.post('/org-units', { name, type, parentId: parentId || undefined })
     setName('')
     setParentId('')
-    qc.invalidateQueries(['org-units'])
+    qc.invalidateQueries({ queryKey: ['org-units'] })
   }
 
   const remove = async (id: string) => {
     try {
       await api.delete(`/org-units/${id}`)
-      qc.invalidateQueries(['org-units'])
+      qc.invalidateQueries({ queryKey: ['org-units'] })
     } catch (err: any) {
       alert(err?.response?.data?.message || 'Failed to delete')
     }

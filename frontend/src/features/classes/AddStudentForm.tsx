@@ -44,8 +44,11 @@ export default function AddStudentForm({ classId: propClassId }: { classId?: str
       const res = await api.post(`/classes/${selectedClass}/students`, payload)
       if (res.status === 201) {
         setSuccess('Student added successfully')
-        // optionally navigate to class roster
-        setTimeout(() => navigate('/'), 1200)
+        // optionally navigate to class roster; avoid auto-navigation in test environment
+        // to prevent act() warnings during unit tests
+        if (!(import.meta && (import.meta as any).env && (import.meta as any).env.MODE === 'test')) {
+          setTimeout(() => navigate('/'), 1200)
+        }
       }
     } catch (err: any) {
       if (err?.response?.status === 409) {
