@@ -40,14 +40,24 @@ services:
       - ${TMP_INIT_DIR}:/docker-entrypoint-initdb.d:ro
 EOF
 
+# Determine compose command: prefer `docker-compose` binary, fallback to `docker compose` plugin
+if command -v docker-compose >/dev/null 2>&1; then
+  COMPOSE_CMD=(docker-compose)
+elif command -v docker >/dev/null 2>&1 && docker compose version >/dev/null 2>&1; then
+  COMPOSE_CMD=(docker compose)
+else
+  echo "Error: neither 'docker-compose' nor 'docker compose' is available in PATH" >&2
+  exit 1
+fi
+
 echo "Tearing down any existing compose stack and volumes..."
-docker-compose -f docker-compose.yml -f docker-compose.test.override.yml down -v || true
+"${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml down -v || true
 
 echo "Starting db and redis..."
-docker-compose -f docker-compose.yml -f docker-compose.test.override.yml up -d db redis
+"${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml up -d db redis
 
 echo "Waiting for Postgres to be ready..."
-until docker-compose -f docker-compose.yml -f docker-compose.test.override.yml exec -T db pg_isready -U "${POSTGRES_USER}" >/dev/null 2>&1; do
+until "${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml exec -T db pg_isready -U "${POSTGRES_USER}" >/dev/null 2>&1; do
   sleep 1
 done
 echo "Postgres is ready."
@@ -55,12 +65,12 @@ echo "Postgres is ready."
 echo "Waiting for DB initialization (migrations + seeds) to finish..."
 attempt=0
 max_attempts=120
-until docker-compose -f docker-compose.yml -f docker-compose.test.override.yml exec -T db \
+until "${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml exec -T db \
   psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -tAc "SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='roles';" | grep -q 1; do
   attempt=$((attempt+1))
   if [ $attempt -ge $max_attempts ]; then
     echo "Timed out waiting for DB initialization (roles table)." >&2
-    docker-compose -f docker-compose.yml -f docker-compose.test.override.yml logs db || true
+    "${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml logs db || true
     exit 1
   fi
   sleep 1

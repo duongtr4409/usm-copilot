@@ -212,4 +212,26 @@
     "output": null,
     "log": "Delegated Java-BE to fix Flyway migrations/seeds and test configuration to support compose-based integration tests; coordinate with DevOps-Engine for test runs."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T08:52:00Z",
+    "from": "@DevOps-Engine",
+    "to": "@PMO",
+    "task_id": "TASK-016",
+    "status": "COMPLETED",
+    "input": { "description": "Iterate Testcontainers and docker-java, implement compose-based integration test wrapper, propagate surefire env vars." },
+    "output": { "artifacts": ["backend/pom.xml", "scripts/run-integration-tests-compose.sh", "docs/TASK-016-Runbook.md", "logs/TASK-016/try-testcontainers-output.txt"], "branch": "TASK-016/fix-testcontainers-docker-java" },
+    "log": "DevOps-Engine removed invalid docker-java override, added surefire env propagation, added compose-based test runner and runbook. Reproduction steps included. Tests still require host Docker/compose to execute; branch prepared for PR."
+  }
+  ,
+  {
+    "timestamp": "2026-04-22T08:52:00Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-016",
+    "status": "COMPLETED",
+    "input": { "description": "Investigate Flyway migration and seed ordering issues (V11__seed_test_user.sql). Make seeds idempotent or move them into proper migrations, adjust test setup to wait for migrations, and run integration tests against compose DB; report fixes and test logs." },
+    "output": { "artifacts": ["backend/src/test/resources/db/migration/V11__seed_test_user.sql", "scripts/run-integration-tests-compose.sh"], "branch": "TASK-016/fix-flyway-seed-ordering", "commit": "50a1563" },
+    "log": "Java-BE made seed idempotent and added DB-wait to compose test script. Could not run compose-backed integration tests here due to missing docker-compose; please run the provided script on a host with Docker & docker-compose and report logs."
+  }
 ]
