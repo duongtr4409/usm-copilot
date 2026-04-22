@@ -79,6 +79,7 @@ echo "Postgres is ready."
 echo "Detecting DB environment inside container..."
 CONTAINER_PG_USER=$("${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml exec -T db env | awk -F= '/^POSTGRES_USER=/{print $2}' || true)
 CONTAINER_PG_DB=$("${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml exec -T db env | awk -F= '/^POSTGRES_DB=/{print $2}' || true)
+CONTAINER_PG_PASS=$("${COMPOSE_CMD[@]}" -f docker-compose.yml -f docker-compose.test.override.yml exec -T db env | awk -F= '/^POSTGRES_PASSWORD=/{print $2}' || true)
 if [ -n "$CONTAINER_PG_USER" ]; then
   echo "Using container POSTGRES_USER=$CONTAINER_PG_USER"
   POSTGRES_USER="$CONTAINER_PG_USER"
@@ -86,6 +87,10 @@ fi
 if [ -n "$CONTAINER_PG_DB" ]; then
   echo "Using container POSTGRES_DB=$CONTAINER_PG_DB"
   POSTGRES_DB="$CONTAINER_PG_DB"
+fi
+if [ -n "$CONTAINER_PG_PASS" ]; then
+  echo "Using container POSTGRES_PASSWORD=(masked)"
+  POSTGRES_PASSWORD="$CONTAINER_PG_PASS"
 fi
 
 # Export compose DB connection overrides to match the running container
