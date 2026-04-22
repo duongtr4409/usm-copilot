@@ -3,7 +3,8 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import Home from './pages/Home'
 import AddStudentForm from './features/classes/AddStudentForm'
-import OrgUnitsPage from './features/org/OrgUnitsPage'
+
+import OrgTree from './features/org/OrgTree'
 import { useAuthStore } from './store/auth'
 
 export default function App() {
@@ -33,6 +34,7 @@ export default function App() {
             <span style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin Controls</span>
           </>
         )}
+        <Link to="/org-units">Org units</Link>
       </header>
 
       <main style={{ marginTop: 16 }}>
@@ -40,7 +42,7 @@ export default function App() {
           <Route path="/" element={<Home />} />
           <Route path="/login" element={<LoginPage />} />
           <Route path="/classes/:id/add-student" element={<AddStudentForm />} />
-          <Route path="/org-units" element={<OrgUnitsPage />} />
+          <Route path="/org-units" element={<OrgTree />} />
         </Routes>
       </main>
     </div>

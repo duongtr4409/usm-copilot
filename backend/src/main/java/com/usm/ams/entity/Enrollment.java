@@ -14,7 +14,7 @@ public class Enrollment {
     @Column(columnDefinition = "uuid")
     private UUID id;
 
-    @Column(name = "class_id", nullable = false)
+    @Column(name = "class_unit_id", nullable = false)
     private UUID classUnitId;
 
     @ManyToOne

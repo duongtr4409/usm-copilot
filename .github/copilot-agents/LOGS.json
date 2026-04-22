@@ -390,4 +390,37 @@
     "output": { "artifacts": ["backend/src/main/java/com/usm/ams/dto/ClassDto.java", "backend/src/main/java/com/usm/ams/controller/ClassController.java", "backend/src/main/java/com/usm/ams/repository/OrganizationUnitRepository.java", "backend/src/test/java/com/usm/ams/controller/ClassControllerTest.java", "backend/src/test/java/com/usm/ams/repository/OrganizationUnitRepositoryTest.java"], "commit": "092e0a1", "pr": "https://github.com/duongtr4409/usm-copilot/pull/7" },
     "log": "TASK-027 implemented and PR opened for review by @Code-Review and @Tech-lead."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T14:36:21Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-028",
+    "status": "DELEGATED",
+    "input": { "description": "Implement OrganizationUnit CRUD: create/validate JPA entity mapping to db/migrations/V3__organization_units.sql, add repository, service, DTOs, controller with endpoints GET/POST/PUT/DELETE under /api/v1/org-units, add unit tests and integration tests, create branch TASK-028/organization-units, run unit tests, push branch, and open PR." },
+    "output": null,
+    "log": "Delegated Java-BE to implement TASK-028: OrganizationUnit CRUD; request incremental updates for branch creation, endpoint scaffolding, tests passing, and PR URL."
+  }
+  ,
+  {
+    "timestamp": "2026-04-22T14:55:49Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-028",
+    "status": "COMPLETED",
+    "input": { "description": "Implement OrganizationUnit CRUD; branch TASK-028/organization-units; run unit tests; push; open PR" },
+    "output": { "artifacts": ["backend/src/main/java/com/usm/ams/controller/OrganizationUnitController.java","backend/src/main/java/com/usm/ams/service/OrganizationUnitServiceImpl.java","backend/src/main/java/com/usm/ams/dto/OrganizationUnitCreateRequest.java","backend/src/test/java/com/usm/ams/service/OrganizationUnitServiceTest.java"], "commit": "397b4dca451a12d700eab797b5826336af4d7a09", "pr_url": "https://github.com/duongtr4409/usm-copilot/pull/11" },
+    "log": "Java-BE implemented OrganizationUnit CRUD, added DTOs, service, controller, unit tests, pushed branch and opened PR #11; unit tests passed (logs/TASK-028/maven-unit-tests.log)."
+  }
+  ,
+  {
+    "timestamp": "2026-04-22T14:58:37Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-029",
+    "status": "DELEGATED",
+    "input": { "description": "Implement Staff CRUD: create JPA entity mapping to db/migrations/V4__staff.sql, add repository, service, DTOs, controller endpoints under /api/v1/staff (GET, POST, PUT, DELETE), unit tests, create branch TASK-029/staff-crud, run unit tests, push and open PR." },
+    "output": null,
+    "log": "Delegated Java-BE to implement TASK-029: Staff CRUD and open PR; request incremental updates (branch created, endpoints scaffolded, tests passing, PR URL)."
+  }
 ]

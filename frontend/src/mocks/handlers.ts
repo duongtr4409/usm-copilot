@@ -2,6 +2,13 @@ import { rest } from 'msw'
 import { v4 as uuidv4 } from 'uuid'
 
 const API_BASE = (import.meta.env.VITE_API_BASE as string) || 'http://localhost:8080/api/v1'
+// In-memory org-units store for local/mock behavior when backend endpoints are not available.
+// TODO: Remove this mock once the backend exposes the org-units CRUD endpoints
+let orgUnits: Array<{ id: string; title: string; code?: string; parentId?: string | null }> = [
+  { id: 'org-root-1', title: 'Head Office', code: 'HO', parentId: null },
+  { id: 'org-dept-1', title: 'Department A', code: 'DPT-A', parentId: 'org-root-1' },
+  { id: 'org-root-2', title: 'Branch 1', code: 'BR1', parentId: null },
+]
 
 // simple in-memory mock store for organization units
 let orgUnits = [
@@ -42,28 +49,39 @@ export const handlers = [
     )
   }),
 
-  // org-units: list
+
+  // Org-units mock CRUD (client-side mock while backend is missing)
   rest.get(`${API_BASE}/org-units`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(orgUnits))
   }),
 
-  // org-units: create
+
   rest.post(`${API_BASE}/org-units`, async (req, res, ctx) => {
     const body = await req.json()
-    const id = uuidv4()
-    const newUnit = { id, name: body.name, type: body.type || 'Phòng', parentId: body.parentId || null }
+    const newUnit = { id: uuidv4(), title: body?.title || 'Untitled', code: body?.code, parentId: body?.parentId ?? null }
     orgUnits.push(newUnit)
     return res(ctx.status(201), ctx.json(newUnit))
   }),
 
-  // org-units: delete
+  rest.put(`${API_BASE}/org-units/:id`, async (req, res, ctx) => {
+    const { id } = req.params as { id: string }
+    const body = await req.json()
+    const u = orgUnits.find((x) => x.id === id)
+    if (!u) return res(ctx.status(404))
+    u.title = body?.title ?? u.title
+    u.code = body?.code ?? u.code
+    if (body && Object.prototype.hasOwnProperty.call(body, 'parentId')) u.parentId = body.parentId
+    return res(ctx.status(200), ctx.json(u))
+  }),
+
   rest.delete(`${API_BASE}/org-units/:id`, (req, res, ctx) => {
     const { id } = req.params as { id: string }
-    const hasChildren = orgUnits.some((u) => u.parentId === id)
-    if (hasChildren) {
-      return res(ctx.status(409), ctx.json({ code: 'HAS_CHILDREN', message: 'Unit has children' }))
-    }
-    orgUnits = orgUnits.filter((u) => u.id !== id)
+    const node = orgUnits.find((x) => x.id === id)
+    if (!node) return res(ctx.status(404))
+    // remove node
+    orgUnits = orgUnits.filter((x) => x.id !== id)
+    // reparent children to the deleted node's parent (or root/null)
+    orgUnits = orgUnits.map((u) => (u.parentId === id ? { ...u, parentId: node.parentId ?? null } : u))
     return res(ctx.status(204))
   }),
 

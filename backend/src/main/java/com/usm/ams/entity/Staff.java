@@ -18,13 +18,13 @@ public class Staff {
     @JoinColumn(name = "account_id")
     private UserAccount account;
 
-    @Column(name = "staff_number")
+    @Column(name = "staff_number", unique = true, length = 100)
     private String staffNumber;
 
-    @Column(name = "full_name", nullable = false)
+    @Column(name = "full_name", nullable = false, length = 255)
     private String fullName;
 
-    @Column
+    @Column(length = 255)
     private String position;
 
     @ManyToOne
@@ -40,16 +40,16 @@ public class Staff {
     @Column(name = "created_at", nullable = false)
     private OffsetDateTime createdAt = OffsetDateTime.now();
 
-    public Staff() {}
+    @Column(name = "updated_at", nullable = false)
+    private OffsetDateTime updatedAt = OffsetDateTime.now();
 
-    public Staff(String staffNumber, String fullName, String position, OrganizationUnit unit, String contact) {
-        this.staffNumber = staffNumber;
-        this.fullName = fullName;
-        this.position = position;
-        this.unit = unit;
-        this.contact = contact;
-        this.createdAt = OffsetDateTime.now();
-    }
+    @Column(name = "created_by")
+    private String createdBy;
+
+    @Column(name = "updated_by")
+    private String updatedBy;
+
+    public Staff() {}
 
     public UUID getId() { return id; }
     public void setId(UUID id) { this.id = id; }
@@ -77,4 +77,13 @@ public class Staff {
 
     public OffsetDateTime getCreatedAt() { return createdAt; }
     public void setCreatedAt(OffsetDateTime createdAt) { this.createdAt = createdAt; }
+
+    public OffsetDateTime getUpdatedAt() { return updatedAt; }
+    public void setUpdatedAt(OffsetDateTime updatedAt) { this.updatedAt = updatedAt; }
+
+    public String getCreatedBy() { return createdBy; }
+    public void setCreatedBy(String createdBy) { this.createdBy = createdBy; }
+
+    public String getUpdatedBy() { return updatedBy; }
+    public void setUpdatedBy(String updatedBy) { this.updatedBy = updatedBy; }
 }
