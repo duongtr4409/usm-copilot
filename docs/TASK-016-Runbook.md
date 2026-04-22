@@ -31,5 +31,18 @@
   - Review changes in `backend/pom.xml` and `scripts/run-integration-tests-compose.sh`.
   - If approved, push branch `TASK-016/fix-testcontainers-docker-java` and open PR requesting approvals from @PMO and @Java-BE.
 
+  CI Integration (GitHub Actions)
+  ------------------------------
+
+  This repository includes a lightweight GitHub Actions workflow to run unit tests and the compose-backed integration test wrapper on pull requests to the `main` branch.
+
+  - Workflow file: `.github/workflows/compose-integration.yml`
+  - It runs unit tests using Maven, then brings up `db` and `redis` via `docker compose` and executes the script `./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest`.
+
+  Notes:
+  - Runners must have Docker and `docker compose` available (ubuntu-latest typically supports Docker). If your organization uses self-hosted runners, ensure Docker is installed and the runner has sufficient privileges.
+  - For security reasons the workflow does not persist secrets; if the compose files require custom passwords, use repository secrets and an override compose file in the PR.
+
+
 **Notes**
 - The repository already contains helpful scripts `scripts/try-dockerjava-versions.sh` and `scripts/try-testcontainers.sh` — use them to iterate versions if further tuning is required.
