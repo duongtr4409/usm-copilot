@@ -305,4 +305,15 @@
     },
     "log": "Verified AddStudentToClass endpoint and service implementation exist; will run unit tests next to validate behavior."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T15:06:30Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-005",
+    "status": "UNIT_TESTS_PASSED",
+    "input": { "description": "Run `mvn -f backend/pom.xml test -DskipITs` to verify unit tests" },
+    "output": { "artifact": "logs/TASK-005/maven-unit-tests.log" },
+    "log": "Unit tests passed locally (BUILD SUCCESS). See attached maven unit test log."
+  }
 ]
