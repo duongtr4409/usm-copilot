@@ -380,4 +380,15 @@
     "output": null,
     "log": "Delegated frontend subtasks to React-FE and requested PRs per task."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T14:36:21Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-028",
+    "status": "DELEGATED",
+    "input": { "description": "Implement OrganizationUnit CRUD: create/validate JPA entity mapping to db/migrations/V3__organization_units.sql, add repository, service, DTOs, controller with endpoints GET/POST/PUT/DELETE under /api/v1/org-units, add unit tests and integration tests, create branch TASK-028/organization-units, run unit tests, push branch, and open PR." },
+    "output": null,
+    "log": "Delegated Java-BE to implement TASK-028: OrganizationUnit CRUD; request incremental updates for branch creation, endpoint scaffolding, tests passing, and PR URL."
+  }
 ]
