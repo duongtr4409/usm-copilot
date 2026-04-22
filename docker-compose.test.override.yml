@@ -2,4 +2,4 @@ version: '3.8'
 services:
   db:
     volumes:
-      - /tmp/tmp.maF9UC3BdK:/docker-entrypoint-initdb.d:ro
+      - /tmp/tmp.12SPrMJLZd:/docker-entrypoint-initdb.d:ro
