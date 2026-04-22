@@ -32,6 +32,18 @@ Task mapping (PMO canonical tasks):
 | TASK-024 | Add non-destructive migrations for V6/V8 | @DB-Admin | Create new Flyway migrations (next versions) that safely align schema to current application expectations without editing historical migrations; commit on a feature branch and open PR. |
 | TASK-025 | Run CI smoke tests & full test suite | @DevOps-Engine / @QA-Tester | Execute CI workflow for PRs, run compose-backed integration tests and full unit/integration suite; report results and fix failures. |
 | TASK-026 | Final report and cleanup | @PMO | Produce final report summarizing changes, decisions, CI status, and recommended production migration steps; close tasks and update docs. |
+| TASK-027 | Backend: GET /classes | @Java-BE | Implement `GET /api/v1/classes` returning list of class organization units (type 'Lớp'), DTO mapping, repository method, and unit tests. |
+| TASK-028 | Backend: OrganizationUnit CRUD | @Java-BE | Implement full CRUD for `organization_unit` (`/org-units` endpoints), validation, and unit/integration tests. |
+| TASK-029 | Backend: Staff CRUD | @Java-BE | Implement `/staff` endpoints (create/update/list/delete), link to `UserAccount`, and enforcement of business rules; tests. |
+| TASK-030 | Backend: Student endpoints | @Java-BE | Implement student profile APIs (`/api/v1/students` read/update), mapping to `StudentProfile` and unit tests. |
+| TASK-031 | Backend: Class roster endpoint | @Java-BE | Implement `GET /api/v1/classes/{classId}/students` (roster) with proper RBAC checks and tests. |
+| TASK-032 | Backend: News endpoints | @Java-BE | Implement `/news` endpoints (list/create/publish) and outbox integration for published events. |
+| TASK-033 | Frontend: ClassPicker integration | @React-FE | Wire `ClassPicker` to `GET /classes`, add caching and error states; add tests. |
+| TASK-034 | Frontend: AddStudent form polish | @React-FE | Improve `AddStudentForm` UX, error handling, loading states, and navigation; integrate with real backend. |
+| TASK-035 | Frontend: OrgUnit tree UI | @React-FE | Implement hierarchical org-unit management UI (create/update/reparent/delete) and unit tests. |
+| TASK-036 | Frontend: Staff management UI | @React-FE | Implement staff CRUD UI, assignment to org-units, and RBAC-aware views. |
+| TASK-037 | Frontend: News management UI | @React-FE | Implement news create/edit/publish UI with RTE and publish workflow. |
+| TASK-038 | Frontend: Class roster UI | @React-FE | Implement class roster page showing enrolled students and actions. |
 
 Priority: HIGH
 
