@@ -1,0 +1,8 @@
+version: '3.8'
+
+services:
+  db:
+    environment:
+      POSTGRES_USER: usm
+      POSTGRES_PASSWORD: test_password
+      POSTGRES_DB: usm
