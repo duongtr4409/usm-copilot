@@ -191,4 +191,25 @@
     ] },
     "log": "Java-BE implemented fixes requested by Code-Review and ran unit tests successfully (BUILD SUCCESS). Integration tests remain opt-in and require Docker/Testcontainers."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T08:50:00Z",
+    "from": "@PMO",
+    "to": "@DevOps-Engine",
+    "task_id": "TASK-016",
+    "status": "DELEGATED",
+    "input": { "description": "Iterate docker-java and Testcontainers versions (use only versions resolvable from Maven Central), attempt CLI provider strategy, and if unresolved implement a compose-based integration test path: ensure Postgres init runs Flyway migrations in correct order, add wrapper scripts to run integration tests against compose DB, and produce reproducible steps and logs." },
+    "output": null,
+    "log": "Delegated DevOps-Engine to continue resolving Testcontainers/Docker API mismatch and to provide compose-based fallback scripts and test logs."
+  },
+  {
+    "timestamp": "2026-04-22T08:50:00Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-016",
+    "status": "DELEGATED",
+    "input": { "description": "Investigate Flyway migration and seed ordering issues (V11__seed_test_user.sql). Make seeds idempotent or move them into proper migrations, adjust test setup to wait for migrations, and run integration tests against compose DB; report fixes and test logs." },
+    "output": null,
+    "log": "Delegated Java-BE to fix Flyway migrations/seeds and test configuration to support compose-based integration tests; coordinate with DevOps-Engine for test runs."
+  }
 ]

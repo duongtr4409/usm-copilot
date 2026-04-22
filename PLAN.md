@@ -22,6 +22,7 @@ Task mapping (PMO canonical tasks):
 | TASK-009 | QA Test Execution | @QA-Tester | Test reports in `docs/test-reports/TASK-009.md` and ALL_TESTS_PASSED
 | TASK-010 | Implement AddStudentToClass transactional workflow | @Java-BE | Backend service implementing atomic CreateAccount + CreateProfile + Enrollment + outbox; integration tests
 | TASK-011 | DevOps: Docker & Compose deployment | @DevOps-Engine | Dockerfiles for `backend` and `frontend`, `docker-compose.yml`, `.env.example`, and `docs/deploy/Docker-Compose.md`
+| TASK-016 | Unblock integration tests | @DevOps-Engine / @Java-BE | Resolve Testcontainers ↔ Docker API negotiation or implement reliable compose-based integration test path; fix Flyway seed ordering; run full integration tests and produce test report and PR. |
 
 Priority: HIGH
 
@@ -66,3 +67,21 @@ Context:
   - Approval required from: @PMO and @Code-Review
 
 Timestamp: 2026-04-21T08:55:00Z
+
+PMO hand-off (to be sent to @DevOps-Engine):
+@DevOps-Engine: "TASK-016: Diagnose and remediate Testcontainers/Docker API mismatch preventing integration tests from running reliably. Iterate docker-java and Testcontainers versions (only those resolvable from Maven Central), attempt CLI provider strategy, and if unresolved implement a compose-based test path: ensure Postgres init runs Flyway migrations in the correct order and provide wrapper scripts to run integration tests against compose DB. Produce reproducible steps, updated scripts, updated `backend/pom.xml` or dependencyManagement if required, and logs/artifacts of full integration test runs."
+Context:
+  - Task ID: TASK-016
+  - Input files: `backend/pom.xml`, `scripts/`, `db/migrations/`, `docker-compose.yml`, `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`, `backend/src/test/resources/db/migration/V11__seed_test_user.sql`
+  - Expected output: Wrapper scripts, updated `pom.xml` or dependency entries (if needed), test logs, runbook for reproducing the fix, and a branch/PR if changes were made
+  - Approval required from: @PMO and @Java-BE
+
+PMO hand-off (to be sent to @Java-BE):
+@Java-BE: "TASK-016: Investigate and fix Flyway migration/seed ordering and test configuration causing `V11__seed_test_user.sql` failures when running integration tests against compose DB. Make seeds idempotent (e.g. use `ON CONFLICT DO NOTHING`), adjust migration numbering or test setup so migrations run before seeds, and ensure tests wait for DB readiness. Run integration tests against the compose DB and report results."
+Context:
+  - Task ID: TASK-016
+  - Input files: `db/migrations/`, `backend/src/test/resources/db/migration/V11__seed_test_user.sql`, `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`
+  - Expected output: Updated migrations/seeds, updated test configuration, passing integration test run logs, and a branch/PR with changes
+  - Approval required from: @PMO and @DevOps-Engine
+
+Timestamp: 2026-04-22T08:50:00Z

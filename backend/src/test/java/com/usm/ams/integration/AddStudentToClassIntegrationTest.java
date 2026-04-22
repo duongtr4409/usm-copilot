@@ -19,8 +19,6 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.test.context.ActiveProfiles;
 import org.junit.jupiter.api.condition.EnabledIfEnvironmentVariable;
 import org.testcontainers.containers.PostgreSQLContainer;
-import org.testcontainers.junit.jupiter.Container;
-import org.testcontainers.junit.jupiter.Testcontainers;
 import org.springframework.test.context.DynamicPropertyRegistry;
 import org.springframework.test.context.DynamicPropertySource;
 
@@ -30,21 +28,31 @@ import java.util.UUID;
 
 @SpringBootTest(webEnvironment = SpringBootTest.WebEnvironment.RANDOM_PORT)
 @ActiveProfiles("integration-tests")
-@Testcontainers
 @EnabledIfEnvironmentVariable(named = "RUN_INTEGRATION_TESTS", matches = "true")
 public class AddStudentToClassIntegrationTest {
 
-    @Container
-    public static PostgreSQLContainer<?> postgres = new PostgreSQLContainer<>("postgres:15")
-            .withDatabaseName("test")
-            .withUsername("test")
-            .withPassword("test");
+    private static PostgreSQLContainer<?> postgres = null;
 
     @DynamicPropertySource
     static void registerPgProperties(DynamicPropertyRegistry registry) {
-        registry.add("spring.datasource.url", postgres::getJdbcUrl);
-        registry.add("spring.datasource.username", postgres::getUsername);
-        registry.add("spring.datasource.password", postgres::getPassword);
+        String useCompose = System.getenv().getOrDefault("USE_COMPOSE_DB", "false");
+        if ("true".equalsIgnoreCase(useCompose)) {
+            String url = System.getenv().getOrDefault("COMPOSE_DB_URL", "jdbc:postgresql://localhost:5432/test");
+            String user = System.getenv().getOrDefault("COMPOSE_DB_USERNAME", "test");
+            String pass = System.getenv().getOrDefault("COMPOSE_DB_PASSWORD", "test");
+            registry.add("spring.datasource.url", () -> url);
+            registry.add("spring.datasource.username", () -> user);
+            registry.add("spring.datasource.password", () -> pass);
+        } else {
+            postgres = new PostgreSQLContainer<>("postgres:15")
+                    .withDatabaseName("test")
+                    .withUsername("test")
+                    .withPassword("test");
+            postgres.start();
+            registry.add("spring.datasource.url", postgres::getJdbcUrl);
+            registry.add("spring.datasource.username", postgres::getUsername);
+            registry.add("spring.datasource.password", postgres::getPassword);
+        }
     }
 
     @Autowired

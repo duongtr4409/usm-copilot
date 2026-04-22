@@ -1,6 +1,6 @@
 # 📋 Task Board
 **Manager**: @PMO
-**Last Updated**: 2026-04-21T08:31:00Z
+**Last Updated**: 2026-04-22T08:50:00Z
 **Active Sprint**: — (Awaiting first request)
 
 ---
@@ -47,6 +47,7 @@
 | TASK-011 | DevOps: Docker & Compose deployment | @DevOps-Engine | ✅ DONE | TASK-003, TASK-004 | 2026-04-21 |
 | TASK-013 | Design RBAC & JWT | @Tech-lead | ✅ DONE | TASK-002 | 2026-04-21 |
 | TASK-014 | Implement RBAC & JWT | @Java-BE | ✅ DONE | TASK-013 | 2026-04-21 |
+| TASK-016 | Unblock integration tests (Testcontainers/Docker API and Flyway fixes) | @DevOps-Engine / @Java-BE | 🔄 IN_PROGRESS | TASK-012 | 2026-04-22 |
 
 ### Linked Documents
 - Requirements: [inbox/wUser/myRequirement.md](inbox/wUser/myRequirement.md)
