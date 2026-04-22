@@ -244,4 +244,26 @@
     "output": null,
     "log": "Delegated Java-BE to patch the compose-runner and execute the integration test for TASK-017."
   }
+,
+  {
+    "timestamp": "2026-04-22T12:12:00Z",
+    "from": "@DB-Admin",
+    "to": "@PMO",
+    "task_id": "TASK-020",
+    "status": "COMPLETED",
+    "input": { "description": "Update V6 migration to use class_unit_id and FK to organization_unit(id); run compose-backed integration test" },
+    "output": { "artifacts": ["db/migrations/V6__classes_enrollments.sql"], "branch": "TASK-020/fix-enrollments-fk", "logs": ["outbox/TASK-020-maven-output.log","outbox/TASK-020-runner-output.log","outbox/TASK-020-db-container.log"] },
+    "log": "DB-Admin updated V6 to use class_unit_id referencing organization_unit, aligned Enrollment entity mapping, ran integration test; found subsequent Outbox JSONB vs text mismatch and reported next steps."
+  }
+,
+  {
+    "timestamp": "2026-04-22T12:16:00Z",
+    "from": "@DB-Admin",
+    "to": "@PMO",
+    "task_id": "TASK-021",
+    "status": "COMPLETED",
+    "input": { "description": "Change V8 outbox.payload from JSONB to TEXT and re-run compose-backed integration test" },
+    "output": { "artifacts": ["db/migrations/V8__outbox.sql"], "branch": "TASK-021/fix-outbox-payload-type", "logs": ["logs/TASK-021/maven-output.log","logs/TASK-021/runner-output.log","logs/TASK-021/db-container.log"] },
+    "log": "DB-Admin changed outbox.payload to TEXT for test compatibility and re-ran tests; AddStudentToClassIntegrationTest passed (3/3). Recommended non-destructive production migration in report."
+  }
 ]

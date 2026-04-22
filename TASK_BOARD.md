@@ -51,6 +51,8 @@
 | TASK-017 | Fix compose test credential propagation | @Java-BE / @DevOps-Engine | 🔄 IN_PROGRESS | TASK-016 | 2026-04-22 |
 | TASK-018 | Fix enrollment table/entity naming mismatch | @Java-BE | 🔄 IN_PROGRESS | TASK-017 | 2026-04-22 |
 | TASK-019 | Relax security for integration-tests profile | @Java-BE | 🔄 IN_PROGRESS | TASK-018 | 2026-04-22 |
+| TASK-020 | Update enrollments FK to organization_unit | @DB-Admin | 🟡 TODO | TASK-019 | 2026-04-22 |
+| TASK-021 | Fix Outbox payload column type mismatch | @DB-Admin | 🟡 TODO | TASK-020 | 2026-04-22 |
 
 ### Linked Documents
 - Requirements: [inbox/wUser/myRequirement.md](inbox/wUser/myRequirement.md)

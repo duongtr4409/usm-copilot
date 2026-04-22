@@ -26,6 +26,8 @@ Task mapping (PMO canonical tasks):
 | TASK-017 | Fix compose test credential propagation | @Java-BE / @DevOps-Engine | Patch `scripts/run-integration-tests-compose.sh` to pass explicit JVM system properties `-Dspring.datasource.url`, `-Dspring.datasource.username`, and `-Dspring.datasource.password` using detected container credentials; ensure these are forwarded to Maven/Surefire forks; run the specified integration test(s) and provide logs showing success or detailed failure. |
 | TASK-018 | Fix enrollment table/entity naming mismatch | @Java-BE | Align JPA entity/table naming so application matches DB migrations (e.g., map `Enrollment` entity to `enrollments` table), re-run integration tests, and provide logs. |
 | TASK-019 | Test profile: relax security for integration tests | @Java-BE | Add an `integration-tests`-only security configuration that permits test requests (e.g., disable auth or permit `/api/v1/**`) so compose-backed integration tests can exercise endpoints without JWT; document the change and run integration tests. |
+| TASK-020 | Align enrollments FK to organization_unit | @DB-Admin | Update `db/migrations/V6__classes_enrollments.sql` so the enrollments table references `organization_unit` (use `class_unit_id` column) instead of `classes(id)`, to match application usage; re-run integration tests and provide logs. |
+| TASK-021 | Align Outbox payload column type | @DB-Admin | Adjust `db/migrations/V8__outbox.sql` to use `payload TEXT` (or add a non-destructive V12 migration to convert payload to text) so it matches the JPA `Outbox.payload` mapping, re-run integration tests and provide logs. |
 
 Priority: HIGH
 
@@ -110,5 +112,21 @@ Context:
   - Input files: `backend/src/main/java/com/usm/ams/security/` (existing), `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`, `scripts/run-integration-tests-compose.sh`
   - Expected output: Add a test-only security configuration (e.g., `TestSecurityConfig` annotated with `@Profile("integration-tests")`) that disables authentication or permits the needed endpoints; run `./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest` and capture logs under `logs/TASK-019/`; commit changes to branch `TASK-019/disable-security-for-tests` with a short report in `outbox/TASK-019-report.md`.
   - Approval required from: @PMO and @Code-Review
+
+PMO hand-off (to be sent to @DB-Admin):
+@DB-Admin: "TASK-020: Update enrollments migration to reference organization_unit and align column naming."
+Context:
+  - Task ID: TASK-020
+  - Input files: `db/migrations/V6__classes_enrollments.sql`, `backend/src/main/java/com/usm/ams/entity/Enrollment.java`, `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`
+  - Expected output: Modify `V6__classes_enrollments.sql` so the enrollments table uses column `class_unit_id` (or ensure application mapping matches) and the foreign key `fk_enrollments_class` references `organization_unit(id)` (ON DELETE CASCADE). Ensure the migration remains idempotent. Re-run `./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest` and capture logs under `logs/TASK-020/`. Commit changes to branch `TASK-020/fix-enrollments-fk` with a migration note.
+  - Approval required from: @PMO and @Java-BE
+
+PMO hand-off (to be sent to @DB-Admin):
+@DB-Admin: "TASK-021: Fix Outbox payload column type mismatch for integration tests."
+Context:
+  - Task ID: TASK-021
+  - Input files: `db/migrations/V8__outbox.sql`, `backend/src/main/java/com/usm/ams/entity/Outbox.java`, `scripts/run-integration-tests-compose.sh`
+  - Expected output: Update `V8__outbox.sql` to change `payload JSONB` to `payload TEXT` (or add a safe V12 migration that adds `payload_text` column, copies JSON->text, and drops JSONB), re-run `./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest` and capture logs under `logs/TASK-021/`; commit changes to branch `TASK-021/fix-outbox-payload-type` and include a short `outbox/TASK-021-report.md` explaining the choice.
+  - Approval required from: @PMO and @Java-BE
 
 Timestamp: 2026-04-22T08:50:00Z
