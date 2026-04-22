@@ -66,20 +66,20 @@ CREATE TRIGGER trg_classes_updated_at
 CREATE TABLE IF NOT EXISTS enrollments (
     id                 UUID        NOT NULL DEFAULT gen_random_uuid(),
     student_profile_id UUID        NOT NULL,
-    class_id           UUID        NOT NULL,
+    class_unit_id      UUID        NOT NULL,
     enrolled_at        TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     status             VARCHAR(50) NOT NULL DEFAULT 'ENROLLED',
     enrolled_by        UUID,
     created_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     updated_at         TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
     CONSTRAINT pk_enrollments PRIMARY KEY (id),
-    CONSTRAINT uq_enrollments_student_class UNIQUE (student_profile_id, class_id),
+    CONSTRAINT uq_enrollments_student_class UNIQUE (student_profile_id, class_unit_id),
     CONSTRAINT fk_enrollments_student FOREIGN KEY (student_profile_id) REFERENCES student_profile (id) ON DELETE CASCADE,
-    CONSTRAINT fk_enrollments_class FOREIGN KEY (class_id) REFERENCES classes (id) ON DELETE CASCADE,
+    CONSTRAINT fk_enrollments_class_unit FOREIGN KEY (class_unit_id) REFERENCES organization_unit (id) ON DELETE CASCADE,
     CONSTRAINT ck_enrollments_status CHECK (status IN ('ENROLLED','PENDING','DROPPED'))
 );
 
-CREATE INDEX IF NOT EXISTS idx_enrollments_class_id ON enrollments(class_id);
+CREATE INDEX IF NOT EXISTS idx_enrollments_class_unit_id ON enrollments(class_unit_id);
 CREATE INDEX IF NOT EXISTS idx_enrollments_student_profile_id ON enrollments(student_profile_id);
 CREATE INDEX IF NOT EXISTS idx_enrollments_status ON enrollments(status);
 

@@ -11,7 +11,7 @@ CREATE TABLE IF NOT EXISTS outbox (
     aggregate_type VARCHAR(150) NOT NULL,
     aggregate_id   UUID,
     event_type     VARCHAR(150) NOT NULL,
-    payload        JSONB       NOT NULL,
+    payload        TEXT       NOT NULL,
     published      BOOLEAN     NOT NULL DEFAULT FALSE,
     tries          INTEGER     NOT NULL DEFAULT 0,
     created_at     TIMESTAMP WITH TIME ZONE NOT NULL DEFAULT NOW(),
