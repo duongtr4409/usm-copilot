@@ -52,5 +52,20 @@ until docker-compose -f docker-compose.yml -f docker-compose.test.override.yml e
 done
 echo "Postgres is ready."
 
+echo "Waiting for DB initialization (migrations + seeds) to finish..."
+attempt=0
+max_attempts=120
+until docker-compose -f docker-compose.yml -f docker-compose.test.override.yml exec -T db \
+  psql -U "${POSTGRES_USER}" -d "${POSTGRES_DB}" -tAc "SELECT 1 FROM information_schema.tables WHERE table_schema='public' AND table_name='roles';" | grep -q 1; do
+  attempt=$((attempt+1))
+  if [ $attempt -ge $max_attempts ]; then
+    echo "Timed out waiting for DB initialization (roles table)." >&2
+    docker-compose -f docker-compose.yml -f docker-compose.test.override.yml logs db || true
+    exit 1
+  fi
+  sleep 1
+done
+echo "DB initialization complete."
+
 echo "Running Maven integration test: $TEST"
 exec mvn -f "$ROOT_DIR/backend/pom.xml" -DskipTests=false -Dtest="$TEST" test
