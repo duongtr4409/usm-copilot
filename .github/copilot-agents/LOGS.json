@@ -327,4 +327,67 @@
     "output": { "reason": "docker-compose command not found", "attempted_command": "./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest", "log_excerpt": "./scripts/run-integration-tests-compose.sh: line 44: docker-compose: command not found" },
     "log": "Integration tests could not be executed in this environment because docker-compose is unavailable. Please advise or provide CI runner with Docker Compose installed. No new DB migrations were necessary."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T16:20:00Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-005",
+    "status": "DELEGATED",
+    "input": { "description": "Align `Enrollment` entity mapping to DB migrations (use table 'enrollments' and column 'class_id'); run unit tests; run compose-based integration test `AddStudentToClassIntegrationTest`; push commits to branch TASK-005/implement-backend and report logs to logs/TASK-005/ (maven unit tests and integration runner outputs)." },
+    "output": null,
+    "log": "Delegated Java-BE to align entity mapping, run tests, push branch, and report results."
+  }
+  ,
+  {
+    "timestamp": "2026-04-22T16:25:00Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-005",
+    "status": "COMPLETED",
+    "input": { "description": "Updated Enrollment entity mapping and ran unit tests; attempted integration run." },
+    "output": { "artifacts": ["backend/src/main/java/com/usm/ams/entity/Enrollment.java"], "commit": "20fc348" },
+    "log": "Changed Enrollment mapping to 'enrollments' and 'class_id'; unit tests passed. Integration tests could not be executed here due to missing docker-compose; requested running integration tests in CI or on a host with Docker Compose."
+  }
+  ,
+  {
+    "timestamp": "2026-04-22T09:00:00Z",
+    "from": "@PMO",
+    "to": "@Tech-lead",
+    "task_id": "TASK-027..TASK-038",
+    "status": "DELEGATED",
+    "input": { "description": "Review decomposition document docs/tasks/TASK-027-038-decomposition.md, confirm owners, adjust estimates, and assign tasks to Java-BE and React-FE." },
+    "output": null,
+    "log": "PMO created decomposition for TASK-005/TASK-006 and requested Tech-lead review and assignment."
+  },
+  {
+    "timestamp": "2026-04-22T09:00:30Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-027..TASK-032",
+    "status": "DELEGATED",
+    "input": { "description": "Implement backend subtasks TASK-027..TASK-032 as described in docs/tasks/TASK-027-038-decomposition.md. Start with TASK-027 (GET /api/v1/classes)." },
+    "output": null,
+    "log": "Delegated backend subtasks to Java-BE to speed up incremental delivery and unblock frontend work."
+  },
+  {
+    "timestamp": "2026-04-22T09:01:00Z",
+    "from": "@PMO",
+    "to": "@React-FE",
+    "task_id": "TASK-033..TASK-038",
+    "status": "DELEGATED",
+    "input": { "description": "Implement frontend subtasks TASK-033..TASK-038 as described in docs/tasks/TASK-027-038-decomposition.md. Start with TASK-033 (ClassPicker integration) once TASK-027 is merged or contract agreed." },
+    "output": null,
+    "log": "Delegated frontend subtasks to React-FE and requested PRs per task."
+  },
+  {
+    "timestamp": "2026-04-22T12:26:47Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-027",
+    "status": "COMPLETED",
+    "input": { "description": "Implemented GET /api/v1/classes: added OrganizationUnitRepository.findByType, ClassDto, ClassController, and unit tests" },
+    "output": { "artifacts": ["backend/src/main/java/com/usm/ams/dto/ClassDto.java", "backend/src/main/java/com/usm/ams/controller/ClassController.java", "backend/src/main/java/com/usm/ams/repository/OrganizationUnitRepository.java", "backend/src/test/java/com/usm/ams/controller/ClassControllerTest.java", "backend/src/test/java/com/usm/ams/repository/OrganizationUnitRepositoryTest.java"], "commit": "092e0a1", "pr": "https://github.com/duongtr4409/usm-copilot/pull/7" },
+    "log": "TASK-027 implemented and PR opened for review by @Code-Review and @Tech-lead."
+  }
 ]
