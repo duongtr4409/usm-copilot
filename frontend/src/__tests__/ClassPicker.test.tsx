@@ -29,7 +29,8 @@ test('loads classes and calls onChange when selection changes', async () => {
   const select = screen.getByRole('combobox', { name: /Class picker/i }) as HTMLSelectElement
   expect(screen.getByRole('option', { name: /Class 1/i })).toBeInTheDocument()
 
-  userEvent.selectOptions(select, ['class-1-uuid'])
+  const user = userEvent.setup()
+  await user.selectOptions(select, ['class-1-uuid'])
   expect(handleChange).toHaveBeenCalledWith('class-1-uuid')
 })
 

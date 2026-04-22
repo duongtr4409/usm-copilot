@@ -21,12 +21,13 @@ function renderWithProviders(ui: React.ReactElement) {
 test('adds student successfully (201)', async () => {
   renderWithProviders(<AddStudentForm classId="class-1-uuid" />)
 
-  userEvent.type(screen.getByLabelText(/Username/i), 'newstudent')
-  userEvent.type(screen.getByLabelText(/Initial Password/i), 'pass123')
-  userEvent.type(screen.getByLabelText(/First name/i), 'John')
-  userEvent.type(screen.getByLabelText(/Last name/i), 'Doe')
+  const user = userEvent.setup()
+  await user.type(screen.getByLabelText(/Username/i), 'newstudent')
+  await user.type(screen.getByLabelText(/Initial Password/i), 'pass123')
+  await user.type(screen.getByLabelText(/First name/i), 'John')
+  await user.type(screen.getByLabelText(/Last name/i), 'Doe')
 
-  userEvent.click(screen.getByRole('button', { name: /Add Student/i }))
+  await user.click(screen.getByRole('button', { name: /Add Student/i }))
 
   await waitFor(() => expect(screen.getByText(/Student added successfully/i)).toBeInTheDocument())
 })
@@ -34,12 +35,13 @@ test('adds student successfully (201)', async () => {
 test('handles 409 conflict when username exists', async () => {
   renderWithProviders(<AddStudentForm classId="class-1-uuid" />)
 
-  userEvent.type(screen.getByLabelText(/Username/i), 'existing')
-  userEvent.type(screen.getByLabelText(/Initial Password/i), 'pass123')
-  userEvent.type(screen.getByLabelText(/First name/i), 'Jane')
-  userEvent.type(screen.getByLabelText(/Last name/i), 'Smith')
+  const user = userEvent.setup()
+  await user.type(screen.getByLabelText(/Username/i), 'existing')
+  await user.type(screen.getByLabelText(/Initial Password/i), 'pass123')
+  await user.type(screen.getByLabelText(/First name/i), 'Jane')
+  await user.type(screen.getByLabelText(/Last name/i), 'Smith')
 
-  userEvent.click(screen.getByRole('button', { name: /Add Student/i }))
+  await user.click(screen.getByRole('button', { name: /Add Student/i }))
 
   await waitFor(() => expect(screen.getByText(/username already exists/i)).toBeInTheDocument())
 })
