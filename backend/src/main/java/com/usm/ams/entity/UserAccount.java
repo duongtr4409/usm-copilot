@@ -6,7 +6,7 @@ import java.time.OffsetDateTime;
 import java.util.UUID;
 
 @Entity
-@Table(name = "user_account", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
+@Table(name = "user_accounts", uniqueConstraints = @UniqueConstraint(columnNames = {"username"}))
 public class UserAccount {
     @Id
     @GeneratedValue(generator = "UUID")
