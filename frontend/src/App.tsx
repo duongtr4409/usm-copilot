@@ -3,6 +3,7 @@ import { Routes, Route, Link, useNavigate } from 'react-router-dom'
 import LoginPage from './pages/LoginPage'
 import Home from './pages/Home'
 import AddStudentForm from './features/classes/AddStudentForm'
+
 import OrgTree from './features/org/OrgTree'
 import { useAuthStore } from './store/auth'
 
@@ -28,7 +29,10 @@ export default function App() {
         )}
         {/* RBAC-aware admin control */}
         {user && user.role !== 'STUDENT' && (
-          <span style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin Controls</span>
+          <>
+            <Link to="/org-units">Org Units</Link>
+            <span style={{ marginLeft: 'auto', fontWeight: 'bold' }}>Admin Controls</span>
+          </>
         )}
         <Link to="/org-units">Org units</Link>
       </header>

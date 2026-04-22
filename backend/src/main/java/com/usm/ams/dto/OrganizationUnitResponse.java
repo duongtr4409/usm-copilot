@@ -1,5 +1,4 @@
 package com.usm.ams.dto;
-
 import java.util.UUID;
 
 public record OrganizationUnitResponse(

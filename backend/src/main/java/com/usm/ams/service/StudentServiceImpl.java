@@ -27,6 +27,9 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
+import java.util.stream.Collectors;
+import com.usm.ams.dto.StudentProfileResponse;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -130,6 +133,16 @@ public class StudentServiceImpl implements StudentService {
         links.put("class", "/api/v1/classes/" + classId + "");
 
         return new AddStudentToClassResponse(profile.getId(), account.getId(), links);
+    }
+
+    @Override
+    public List<StudentProfileResponse> getStudentsInClass(UUID classId) {
+        List<Enrollment> enrollments = enrollmentRepository.findByClassUnitId(classId);
+        return enrollments.stream().map(e -> {
+            StudentProfile p = e.getStudentProfile();
+            UUID accId = (p.getAccount() != null) ? p.getAccount().getId() : null;
+            return new StudentProfileResponse(p.getId(), accId, p.getFirstName(), p.getLastName(), p.getDob());
+        }).collect(Collectors.toList());
     }
 
     public static class UsernameConflictException extends RuntimeException {

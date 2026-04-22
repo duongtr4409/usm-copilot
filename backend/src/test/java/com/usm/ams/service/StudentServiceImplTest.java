@@ -27,6 +27,7 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 import java.time.LocalDate;
 import java.util.Optional;
 import java.util.UUID;
+import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.assertj.core.api.Assertions.assertThatThrownBy;
@@ -110,5 +111,23 @@ class StudentServiceImplTest {
         SecurityContextHolder.clearContext();
 
         assertThatThrownBy(() -> studentService.addStudentToClass(classId, req)).isInstanceOf(org.springframework.security.access.AccessDeniedException.class);
+    }
+
+    @Test
+    void returnsStudentsForClass() {
+        UUID classId = UUID.randomUUID();
+        UserAccount account = new UserAccount("suser", "h", "STUDENT");
+        account.setId(UUID.randomUUID());
+        StudentProfile p = new StudentProfile(account, "Anna", "Nguyen", LocalDate.of(2012,2,3));
+        p.setId(UUID.randomUUID());
+        Enrollment e = new Enrollment(classId, p);
+        e.setId(UUID.randomUUID());
+
+        when(enrollmentRepository.findByClassUnitId(classId)).thenReturn(List.of(e));
+
+        var list = studentService.getStudentsInClass(classId);
+        assertThat(list).isNotNull();
+        assertThat(list).hasSize(1);
+        assertThat(list.get(0).firstName()).isEqualTo("Anna");
     }
 }

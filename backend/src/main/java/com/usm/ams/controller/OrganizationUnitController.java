@@ -16,7 +16,7 @@ import java.util.UUID;
 @RestController
 @RequestMapping("/api/v1/org-units")
 public class OrganizationUnitController {
-
+  
     private final OrganizationUnitService organizationUnitService;
 
     public OrganizationUnitController(OrganizationUnitService organizationUnitService) {

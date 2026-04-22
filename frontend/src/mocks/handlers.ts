@@ -10,6 +10,12 @@ let orgUnits: Array<{ id: string; title: string; code?: string; parentId?: strin
   { id: 'org-root-2', title: 'Branch 1', code: 'BR1', parentId: null },
 ]
 
+// simple in-memory mock store for organization units
+let orgUnits = [
+  { id: 'ou-root-1', name: 'Root Unit', type: 'Khoa', parentId: null },
+  { id: 'class-1-uuid', name: 'Class 1', type: 'Lớp', parentId: 'ou-root-1' },
+]
+
 export const handlers = [
   // login
   rest.post(`${API_BASE}/auth/login`, async (req, res, ctx) => {
@@ -43,10 +49,12 @@ export const handlers = [
     )
   }),
 
+
   // Org-units mock CRUD (client-side mock while backend is missing)
   rest.get(`${API_BASE}/org-units`, (req, res, ctx) => {
     return res(ctx.status(200), ctx.json(orgUnits))
   }),
+
 
   rest.post(`${API_BASE}/org-units`, async (req, res, ctx) => {
     const body = await req.json()
