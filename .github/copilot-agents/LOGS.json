@@ -316,4 +316,15 @@
     "output": { "artifact": "logs/TASK-005/maven-unit-tests.log" },
     "log": "Unit tests passed locally (BUILD SUCCESS). See attached maven unit test log."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T15:10:00Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-005",
+    "status": "INTEGRATION_TESTS_BLOCKED",
+    "input": { "description": "Attempt to run integration test via ./scripts/run-integration-tests-compose.sh failed due to missing docker-compose in environment" },
+    "output": { "reason": "docker-compose command not found", "attempted_command": "./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest", "log_excerpt": "./scripts/run-integration-tests-compose.sh: line 44: docker-compose: command not found" },
+    "log": "Integration tests could not be executed in this environment because docker-compose is unavailable. Please advise or provide CI runner with Docker Compose installed. No new DB migrations were necessary."
+  }
 ]
