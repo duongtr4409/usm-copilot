@@ -4,6 +4,10 @@ import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.usm.ams.dto.AddStudentToClassRequest;
 import com.usm.ams.dto.AddStudentToClassResponse;
+import com.usm.ams.dto.StudentCreateRequest;
+import com.usm.ams.dto.StudentResponse;
+import com.usm.ams.dto.StudentUpdateRequest;
+import com.usm.ams.exception.ResourceNotFoundException;
 import com.usm.ams.entity.Enrollment;
 import com.usm.ams.entity.Outbox;
 import com.usm.ams.entity.OrganizationUnit;
@@ -30,6 +34,7 @@ import java.util.UUID;
 import java.util.List;
 import java.util.stream.Collectors;
 import com.usm.ams.dto.StudentProfileResponse;
+import java.time.OffsetDateTime;
 
 @Service
 public class StudentServiceImpl implements StudentService {
@@ -143,6 +148,81 @@ public class StudentServiceImpl implements StudentService {
             UUID accId = (p.getAccount() != null) ? p.getAccount().getId() : null;
             return new StudentProfileResponse(p.getId(), accId, p.getFirstName(), p.getLastName(), p.getDob());
         }).collect(Collectors.toList());
+    }
+
+    @Override
+    public List<StudentResponse> list(String firstName, String lastName, String username, UUID classId) {
+        List<StudentProfile> profiles;
+        if (classId != null) {
+            profiles = enrollmentRepository.findByClassUnitId(classId).stream()
+                    .map(Enrollment::getStudentProfile)
+                    .distinct()
+                    .collect(Collectors.toList());
+        } else {
+            profiles = studentProfileRepository.findAll();
+        }
+
+        return profiles.stream()
+                .filter(p -> firstName == null || p.getFirstName().equalsIgnoreCase(firstName))
+                .filter(p -> lastName == null || p.getLastName().equalsIgnoreCase(lastName))
+                .filter(p -> username == null || (p.getAccount() != null && username.equalsIgnoreCase(p.getAccount().getUsername())))
+                .map(this::toResponse)
+                .collect(Collectors.toList());
+    }
+
+    @Override
+    public StudentResponse findById(UUID id) {
+        StudentProfile p = studentProfileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("StudentProfile not found"));
+        return toResponse(p);
+    }
+
+    @Override
+    @Transactional
+    public StudentResponse create(StudentCreateRequest request) {
+        Optional<UserAccount> existing = userAccountRepository.findByUsername(request.username());
+        if (existing.isPresent()) {
+            throw new UsernameConflictException("username already exists");
+        }
+        String hashed = passwordEncoder.encode(request.initialPassword());
+        UserAccount account = new UserAccount(request.username(), hashed, "STUDENT");
+        account = userAccountRepository.save(account);
+        StudentProfile p = new StudentProfile(account, request.firstName(), request.lastName(), request.dob());
+        p = studentProfileRepository.save(p);
+        return toResponse(p);
+    }
+
+    @Override
+    @Transactional
+    public StudentResponse update(UUID id, StudentUpdateRequest request) {
+        StudentProfile p = studentProfileRepository.findById(id)
+                .orElseThrow(() -> new ResourceNotFoundException("StudentProfile not found"));
+        p.setFirstName(request.firstName());
+        p.setLastName(request.lastName());
+        p.setDob(request.dob());
+        StudentProfile saved = studentProfileRepository.save(p);
+        return toResponse(saved);
+    }
+
+    @Override
+    @Transactional
+    public void delete(UUID id) {
+        if (!studentProfileRepository.existsById(id)) {
+            throw new ResourceNotFoundException("StudentProfile not found");
+        }
+        studentProfileRepository.deleteById(id);
+    }
+
+    private StudentResponse toResponse(StudentProfile p) {
+        return new StudentResponse(
+                p.getId(),
+                p.getAccount() == null ? null : p.getAccount().getId(),
+                p.getAccount() == null ? null : p.getAccount().getUsername(),
+                p.getFirstName(),
+                p.getLastName(),
+                p.getDob(),
+                p.getCreatedAt()
+        );
     }
 
     public static class UsernameConflictException extends RuntimeException {
