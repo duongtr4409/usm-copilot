@@ -19,7 +19,7 @@ public class OrganizationUnit {
     @Column
     private String code;
 
-    @Column
+    @Column(name = "name")
     private String title;
 
     public OrganizationUnit() {}
