@@ -276,4 +276,33 @@
     "output": { "branch": "TASK-005/implement-backend", "commit": "50a1563c2ccf71131f1a854c3262595a96027181" },
     "log": "Feature branch created and ready for implementation; running unit tests next."
   }
+  ,
+  {
+    "timestamp": "2026-04-22T15:02:00Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-005",
+    "status": "ENDPOINTS_SCAFFOLDED",
+    "input": { "description": "Core endpoints and services for AddStudentToClass identified and present in codebase" },
+    "output": {
+      "artifacts": [
+        "backend/src/main/java/com/usm/ams/controller/ClassesController.java",
+        "backend/src/main/java/com/usm/ams/service/StudentServiceImpl.java",
+        "backend/src/main/java/com/usm/ams/service/StudentService.java",
+        "backend/src/main/java/com/usm/ams/dto/AddStudentToClassRequest.java",
+        "backend/src/main/java/com/usm/ams/dto/AddStudentToClassResponse.java",
+        "backend/src/main/java/com/usm/ams/dto/StudentProfileResponse.java",
+        "backend/src/main/java/com/usm/ams/entity/UserAccount.java",
+        "backend/src/main/java/com/usm/ams/entity/StudentProfile.java",
+        "backend/src/main/java/com/usm/ams/entity/Enrollment.java",
+        "backend/src/main/java/com/usm/ams/entity/Outbox.java",
+        "backend/src/main/java/com/usm/ams/repository/UserAccountRepository.java",
+        "backend/src/main/java/com/usm/ams/repository/StudentProfileRepository.java",
+        "backend/src/main/java/com/usm/ams/repository/EnrollmentRepository.java",
+        "backend/src/main/java/com/usm/ams/repository/OutboxRepository.java",
+        "backend/src/main/java/com/usm/ams/repository/OrganizationUnitRepository.java"
+      ]
+    },
+    "log": "Verified AddStudentToClass endpoint and service implementation exist; will run unit tests next to validate behavior."
+  }
 ]
