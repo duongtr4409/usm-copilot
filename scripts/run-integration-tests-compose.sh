@@ -121,6 +121,9 @@ export SPRING_DATASOURCE_PASSWORD="${COMPOSE_DB_PASSWORD}"
 
 # Also pass properties explicitly to Maven as system properties. This helps when
 # plugins or the build consult properties from the Maven session.
+echo "COMPOSE_DB_URL=${COMPOSE_DB_URL}"
+echo "COMPOSE_DB_USERNAME=${COMPOSE_DB_USERNAME}"
+echo "COMPOSE_DB_PASSWORD=(masked)"
 exec mvn -f "$ROOT_DIR/backend/pom.xml" \
   -DskipTests=false \
   -Dspring.datasource.url="${COMPOSE_DB_URL}" \
