@@ -1,15 +1,21 @@
 import React from 'react'
+import { test, expect } from 'vitest'
 import { render, screen, waitFor } from '@testing-library/react'
 import userEvent from '@testing-library/user-event'
 import AddStudentForm from '../features/classes/AddStudentForm'
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query'
+import { MemoryRouter } from 'react-router-dom'
 import { server } from '../mocks/server'
 import { rest } from 'msw'
 
 const queryClient = new QueryClient()
 
 function renderWithProviders(ui: React.ReactElement) {
-  return render(<QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>)
+  return render(
+    <MemoryRouter>
+      <QueryClientProvider client={queryClient}>{ui}</QueryClientProvider>
+    </MemoryRouter>
+  )
 }
 
 test('adds student successfully (201)', async () => {

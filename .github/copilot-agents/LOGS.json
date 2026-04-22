@@ -379,5 +379,15 @@
     "input": { "description": "Implement frontend subtasks TASK-033..TASK-038 as described in docs/tasks/TASK-027-038-decomposition.md. Start with TASK-033 (ClassPicker integration) once TASK-027 is merged or contract agreed." },
     "output": null,
     "log": "Delegated frontend subtasks to React-FE and requested PRs per task."
+  },
+  {
+    "timestamp": "2026-04-22T12:26:47Z",
+    "from": "@Java-BE",
+    "to": "@PMO",
+    "task_id": "TASK-027",
+    "status": "COMPLETED",
+    "input": { "description": "Implemented GET /api/v1/classes: added OrganizationUnitRepository.findByType, ClassDto, ClassController, and unit tests" },
+    "output": { "artifacts": ["backend/src/main/java/com/usm/ams/dto/ClassDto.java", "backend/src/main/java/com/usm/ams/controller/ClassController.java", "backend/src/main/java/com/usm/ams/repository/OrganizationUnitRepository.java", "backend/src/test/java/com/usm/ams/controller/ClassControllerTest.java", "backend/src/test/java/com/usm/ams/repository/OrganizationUnitRepositoryTest.java"], "commit": "092e0a1", "pr": "https://github.com/duongtr4409/usm-copilot/pull/7" },
+    "log": "TASK-027 implemented and PR opened for review by @Code-Review and @Tech-lead."
   }
 ]
