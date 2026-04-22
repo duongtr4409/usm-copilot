@@ -8,8 +8,6 @@ import { MemoryRouter } from 'react-router-dom'
 import { server } from '../mocks/server'
 import { rest } from 'msw'
 
-const queryClient = new QueryClient()
-
 function renderWithProviders(ui: React.ReactElement) {
   return render(
     <MemoryRouter>
@@ -29,7 +27,7 @@ test('adds student successfully (201)', async () => {
 
   await user.click(screen.getByRole('button', { name: /Add Student/i }))
 
-  await waitFor(() => expect(screen.getByText(/Student added successfully/i)).toBeInTheDocument())
+  await screen.findByText(/Student added successfully/i)
 })
 
 test('handles 409 conflict when username exists', async () => {
@@ -43,5 +41,5 @@ test('handles 409 conflict when username exists', async () => {
 
   await user.click(screen.getByRole('button', { name: /Add Student/i }))
 
-  await waitFor(() => expect(screen.getByText(/username already exists/i)).toBeInTheDocument())
+  await screen.findByText(/username already exists/i)
 })

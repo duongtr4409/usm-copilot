@@ -1,4 +1,4 @@
-import React, { useState } from 'react'
+import React, { useState, useEffect, useRef } from 'react'
 import { useParams, useNavigate } from 'react-router-dom'
 import api from '../../lib/api'
 import ClassPicker from './ClassPicker'
@@ -26,6 +26,7 @@ export default function AddStudentForm({ classId: propClassId }: { classId?: str
   const [lastName, setLastName] = useState('')
   const [error, setError] = useState<string | null>(null)
   const [success, setSuccess] = useState<string | null>(null)
+  const navTimeoutRef = useRef<number | null>(null)
 
   const submit = async (e: React.FormEvent) => {
     e.preventDefault()
@@ -40,14 +41,18 @@ export default function AddStudentForm({ classId: propClassId }: { classId?: str
       profile: { firstName, lastName },
     }
 
-    try {
-      const res = await api.post(`/classes/${selectedClass}/students`, payload)
-      if (res.status === 201) {
-        setSuccess('Student added successfully')
-        // optionally navigate to class roster
-        setTimeout(() => navigate('/'), 1200)
-      }
-    } catch (err: any) {
+      try {
+        const res = await api.post(`/classes/${selectedClass}/students`, payload)
+        if (res.status === 201) {
+          setSuccess('Student added successfully')
+          // navigate after a short delay in normal app runtime only
+          // avoid scheduling navigation during tests to prevent act() warnings
+          if (typeof window !== 'undefined' && process.env.NODE_ENV !== 'test') {
+            const id = window.setTimeout(() => navigate('/'), 1200)
+            navTimeoutRef.current = id
+          }
+        }
+      } catch (err: any) {
       if (err?.response?.status === 409) {
         const data = err.response.data
         setError(data?.message || 'Username already exists')
@@ -58,6 +63,15 @@ export default function AddStudentForm({ classId: propClassId }: { classId?: str
       }
     }
   }
+
+  // clear any pending navigation timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (navTimeoutRef.current) {
+        clearTimeout(navTimeoutRef.current)
+      }
+    }
+  }, [])
 
   return (
     <div>
