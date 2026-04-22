@@ -233,5 +233,15 @@
     "input": { "description": "Investigate Flyway migration and seed ordering issues (V11__seed_test_user.sql). Make seeds idempotent or move them into proper migrations, adjust test setup to wait for migrations, and run integration tests against compose DB; report fixes and test logs." },
     "output": { "artifacts": ["backend/src/test/resources/db/migration/V11__seed_test_user.sql", "scripts/run-integration-tests-compose.sh"], "branch": "TASK-016/fix-flyway-seed-ordering", "commit": "50a1563" },
     "log": "Java-BE made seed idempotent and added DB-wait to compose test script. Could not run compose-backed integration tests here due to missing docker-compose; please run the provided script on a host with Docker & docker-compose and report logs."
+  },
+  {
+    "timestamp": "2026-04-22T11:31:00Z",
+    "from": "@PMO",
+    "to": "@Java-BE",
+    "task_id": "TASK-017",
+    "status": "DELEGATED",
+    "input": { "description": "Patch scripts/run-integration-tests-compose.sh to pass -Dspring.datasource.* JVM properties using detected container credentials, run AddStudentToClassIntegrationTest, capture logs under logs/TASK-017/ and commit to branch TASK-017/fix-compose-credentials" },
+    "output": null,
+    "log": "Delegated Java-BE to patch the compose-runner and execute the integration test for TASK-017."
   }
 ]

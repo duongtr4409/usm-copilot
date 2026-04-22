@@ -23,6 +23,9 @@ Task mapping (PMO canonical tasks):
 | TASK-010 | Implement AddStudentToClass transactional workflow | @Java-BE | Backend service implementing atomic CreateAccount + CreateProfile + Enrollment + outbox; integration tests
 | TASK-011 | DevOps: Docker & Compose deployment | @DevOps-Engine | Dockerfiles for `backend` and `frontend`, `docker-compose.yml`, `.env.example`, and `docs/deploy/Docker-Compose.md`
 | TASK-016 | Unblock integration tests | @DevOps-Engine / @Java-BE | Resolve Testcontainers ↔ Docker API negotiation or implement reliable compose-based integration test path; fix Flyway seed ordering; run full integration tests and produce test report and PR. |
+| TASK-017 | Fix compose test credential propagation | @Java-BE / @DevOps-Engine | Patch `scripts/run-integration-tests-compose.sh` to pass explicit JVM system properties `-Dspring.datasource.url`, `-Dspring.datasource.username`, and `-Dspring.datasource.password` using detected container credentials; ensure these are forwarded to Maven/Surefire forks; run the specified integration test(s) and provide logs showing success or detailed failure. |
+| TASK-018 | Fix enrollment table/entity naming mismatch | @Java-BE | Align JPA entity/table naming so application matches DB migrations (e.g., map `Enrollment` entity to `enrollments` table), re-run integration tests, and provide logs. |
+| TASK-019 | Test profile: relax security for integration tests | @Java-BE | Add an `integration-tests`-only security configuration that permits test requests (e.g., disable auth or permit `/api/v1/**`) so compose-backed integration tests can exercise endpoints without JWT; document the change and run integration tests. |
 
 Priority: HIGH
 
@@ -83,5 +86,29 @@ Context:
   - Input files: `db/migrations/`, `backend/src/test/resources/db/migration/V11__seed_test_user.sql`, `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`
   - Expected output: Updated migrations/seeds, updated test configuration, passing integration test run logs, and a branch/PR with changes
   - Approval required from: @PMO and @DevOps-Engine
+
+PMO hand-off (to be sent to @Java-BE):
+@Java-BE: "TASK-017: Fix compose-runner credential propagation and re-run integration test."
+Context:
+  - Task ID: TASK-017
+  - Input files: `scripts/run-integration-tests-compose.sh`, `backend/pom.xml`, `db/migrations/`, `backend/src/test/resources/db/migration/V11__seed_test_user.sql`
+  - Expected output: Patch to `scripts/run-integration-tests-compose.sh` that passes explicit JVM properties to Maven (`-Dspring.datasource.url`, `-Dspring.datasource.username`, `-Dspring.datasource.password`) using detected container credentials; a successful run of `mvn -Dtest=AddStudentToClassIntegrationTest test` with logs showing Flyway and tests passing, or a detailed failure log and remediation steps. Commit changes to a branch and include test logs.
+  - Approval required from: @PMO and @DevOps-Engine
+
+PMO hand-off (to be sent to @Java-BE):
+@Java-BE: "TASK-018: Fix DB table/entity naming mismatch for Enrollment and re-run integration tests."
+Context:
+  - Task ID: TASK-018
+  - Input files: `backend/src/main/java/com/usm/ams/entity/Enrollment.java`, `db/migrations/V6__classes_enrollments.sql`, `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`
+  - Expected output: Update `Enrollment` entity mapping to match the migration table name (map to `enrollments`), run `./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest` to verify migrations + application schema align and that tests pass; capture logs under `logs/TASK-018/`; commit changes to branch `TASK-018/fix-enrollment-table-name` and include test logs and brief remediation notes.
+  - Approval required from: @PMO and @Code-Review
+
+PMO hand-off (to be sent to @Java-BE):
+@Java-BE: "TASK-019: Add an integration-tests-only security configuration to permit test requests."
+Context:
+  - Task ID: TASK-019
+  - Input files: `backend/src/main/java/com/usm/ams/security/` (existing), `backend/src/test/java/com/usm/ams/integration/AddStudentToClassIntegrationTest.java`, `scripts/run-integration-tests-compose.sh`
+  - Expected output: Add a test-only security configuration (e.g., `TestSecurityConfig` annotated with `@Profile("integration-tests")`) that disables authentication or permits the needed endpoints; run `./scripts/run-integration-tests-compose.sh AddStudentToClassIntegrationTest` and capture logs under `logs/TASK-019/`; commit changes to branch `TASK-019/disable-security-for-tests` with a short report in `outbox/TASK-019-report.md`.
+  - Approval required from: @PMO and @Code-Review
 
 Timestamp: 2026-04-22T08:50:00Z
