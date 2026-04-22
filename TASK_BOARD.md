@@ -53,6 +53,10 @@
 | TASK-019 | Relax security for integration-tests profile | @Java-BE | 🔄 IN_PROGRESS | TASK-018 | 2026-04-22 |
 | TASK-020 | Update enrollments FK to organization_unit | @DB-Admin | 🟡 TODO | TASK-019 | 2026-04-22 |
 | TASK-021 | Fix Outbox payload column type mismatch | @DB-Admin | 🟡 TODO | TASK-020 | 2026-04-22 |
+| TASK-023 | Open PRs for pushed branches (TASK-016..TASK-022) | @DevOps-Engine | 🔄 IN_PROGRESS | TASK-021 | 2026-04-22 |
+| TASK-024 | Add non-destructive migrations for V6/V8 edits | @DB-Admin | 🟡 TODO | TASK-021 | 2026-04-22 |
+| TASK-025 | Run CI smoke tests & full suite | @DevOps-Engine / @QA-Tester | 🟡 TODO | TASK-023, TASK-024 | 2026-04-22 |
+| TASK-026 | Final report & cleanup | @PMO | 🔵 BACKLOG | TASK-025 | 2026-04-22 |
 
 ### Linked Documents
 - Requirements: [inbox/wUser/myRequirement.md](inbox/wUser/myRequirement.md)

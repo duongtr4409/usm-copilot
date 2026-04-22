@@ -28,6 +28,10 @@ Task mapping (PMO canonical tasks):
 | TASK-019 | Test profile: relax security for integration tests | @Java-BE | Add an `integration-tests`-only security configuration that permits test requests (e.g., disable auth or permit `/api/v1/**`) so compose-backed integration tests can exercise endpoints without JWT; document the change and run integration tests. |
 | TASK-020 | Align enrollments FK to organization_unit | @DB-Admin | Update `db/migrations/V6__classes_enrollments.sql` so the enrollments table references `organization_unit` (use `class_unit_id` column) instead of `classes(id)`, to match application usage; re-run integration tests and provide logs. |
 | TASK-021 | Align Outbox payload column type | @DB-Admin | Adjust `db/migrations/V8__outbox.sql` to use `payload TEXT` (or add a non-destructive V12 migration to convert payload to text) so it matches the JPA `Outbox.payload` mapping, re-run integration tests and provide logs. |
+| TASK-023 | Open PRs for integration & CI fixes | @DevOps-Engine | Create Pull Requests for branches TASK-016..TASK-022 against `main`, include reviewers `@Code-Review,@Java-BE,@DB-Admin`, and attach run logs and checklist. |
+| TASK-024 | Add non-destructive migrations for V6/V8 | @DB-Admin | Create new Flyway migrations (next versions) that safely align schema to current application expectations without editing historical migrations; commit on a feature branch and open PR. |
+| TASK-025 | Run CI smoke tests & full test suite | @DevOps-Engine / @QA-Tester | Execute CI workflow for PRs, run compose-backed integration tests and full unit/integration suite; report results and fix failures. |
+| TASK-026 | Final report and cleanup | @PMO | Produce final report summarizing changes, decisions, CI status, and recommended production migration steps; close tasks and update docs. |
 
 Priority: HIGH
 
