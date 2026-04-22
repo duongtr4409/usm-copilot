@@ -29,4 +29,11 @@ public class ClassesController {
         AddStudentToClassResponse resp = studentService.addStudentToClass(classId, request);
         return ResponseEntity.status(HttpStatus.CREATED).body(resp);
     }
+
+    @GetMapping("/{classId}/students")
+    @PreAuthorize("hasRole('ADMIN') or @aclService.isClassAdmin(authentication, #classId)")
+    public ResponseEntity<java.util.List<com.usm.ams.dto.StudentProfileResponse>> getStudentsInClass(@PathVariable UUID classId) {
+        java.util.List<com.usm.ams.dto.StudentProfileResponse> list = studentService.getStudentsInClass(classId);
+        return ResponseEntity.ok(list);
+    }
 }

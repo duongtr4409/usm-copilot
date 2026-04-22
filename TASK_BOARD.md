@@ -37,8 +37,8 @@
 | TASK-002 | Business Requirements Analysis | @BA | ✅ DONE | TASK-001 | 2026-04-21 |
 | TASK-003 | System Architecture Design | @Tech-lead | ✅ DONE | TASK-002 | 2026-04-21 |
 | TASK-004 | Database Schema Design | @DB-Admin | ✅ DONE | TASK-003 | 2026-04-21 |
-| TASK-005 | Backend Implementation | @Java-BE | 🟡 TODO | TASK-003, TASK-004 |  |
-| TASK-006 | Frontend Implementation | @React-FE | 🟡 TODO | TASK-003 |  |
+| TASK-005 | Backend Implementation | @Java-BE | 🔄 IN_PROGRESS | TASK-003, TASK-004 | 2026-04-22 |
+| TASK-006 | Frontend Implementation | @React-FE | 🔄 IN_PROGRESS | TASK-003 | 2026-04-22 |
 | TASK-007 | QA Test Preparation | @QA-Tester | ✅ DONE | TASK-002 | 2026-04-21 |
 | TASK-008 | Code Review — BE & FE | @Code-Review | 🔵 BACKLOG | TASK-005, TASK-006 |  |
 | TASK-009 | QA Test Execution | @QA-Tester | 🔵 BACKLOG | TASK-008 |  |
